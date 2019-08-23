@@ -29,7 +29,7 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res.body.issues_title,'Title');
+          assert.equal(res.body.issue_title,'Title');
           assert.equal(res.body.issue_text,'text');
           assert.equal(res.body.created_by,'Functional Test - Every field filled in');
           assert.equal(res.body.assigned_to,"Chai and Mocha");
@@ -48,7 +48,7 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res.body.issues_title,'Title');
+          assert.equal(res.body.issue_title,'Title');
           assert.equal(res.body.issue_text,'text');
           assert.equal(res.body.created_by,'Functional Test - Every field filled in');
      
@@ -81,7 +81,7 @@ suite('Functional Tests', function() {
         .send({})
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res,'no updated field sent');      
+          assert.equal(res.text,'could not update without an id');      
           done();
         });
       });
@@ -90,11 +90,12 @@ suite('Functional Tests', function() {
         chai.request(server)
         .put('/api/issues/test')
         .send({
+          _id:'5d5ff53fd1d77e00b3198148',
           issue_title: 'new title'
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res,'successfully updated');      
+          assert.equal(res.text,'successfully updated');      
           done();
         });
       });
@@ -103,12 +104,13 @@ suite('Functional Tests', function() {
         chai.request(server)
         .put('/api/issues/test')
         .send({
+          _id:'5d5ff53fd1d77e00b3198148',
           issue_title: 'new title',
           assigned_to: 'test put'
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res,'successfully updated');      
+          assert.equal(res.text,'successfully updated');      
           done();
         });
       });
@@ -124,7 +126,7 @@ suite('Functional Tests', function() {
         .end(function(err, res){
           assert.equal(res.status, 200);
           assert.isArray(res.body);
-          assert.property(res.body[0], 'issue_title');
+           assert.property(res.body[0], 'issue_title');
           assert.property(res.body[0], 'issue_text');
           assert.property(res.body[0], 'created_on');
           assert.property(res.body[0], 'updated_on');
@@ -184,10 +186,10 @@ suite('Functional Tests', function() {
       test('No _id', function(done) {
         chai.request(server)
         .delete('/api/issues/test?issue_title=myissues&created_by=me')
-        .query({})
+        .send({})
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res,"_id error")
+          assert.equal(res.text,"_id error, no id sent")
           done();
         });
       });
@@ -195,11 +197,11 @@ suite('Functional Tests', function() {
       test('Valid _id', function(done) {
         chai.request(server)
         .delete('/api/issues/test?issue_title=myissues&created_by=me')
-        .send({_id:'5d59449ff0f80624c9deae8a'})
-        .query({})
+        .send({_id:'5d5ff53fd1d77e00b3198147'})
+
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res,"deleted 5d59449ff0f80624c9deae8a")
+          assert.equal(res.text,"deleted 5d5ff53fd1d77e00b3198147")
           done();
         });
       });
