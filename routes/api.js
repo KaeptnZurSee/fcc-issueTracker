@@ -82,9 +82,12 @@ module.exports = function (app) {
     
     .put(function (req, res){
       var project = req.params.project;
+      if(!req.body._id){
+        res.send("could not update without an id")
+      }
       Issues.findOne({_id:req.body._id},(err,issue)=>{
         if(err){
-          res.send("could not update "+req.body._id)
+          res.send("could not update")
         }
         else{
           let bodyKeys = Object.keys(req.body);
